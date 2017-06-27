@@ -593,11 +593,12 @@ export default class Autocomplete extends PureComponent {
 
       let value = data[suggestionIndex];
       if (typeof value === 'object') {
-        value = value[dataLabel];
+        label = value[dataLabel];
+        value = value[dataValue];
       }
 
       if (onAutocomplete) {
-        onAutocomplete(value, suggestionIndex, this.state.matches);
+        onAutocomplete(label, value, suggestionIndex, this.state.matches);
       }
 
       this.setState({
@@ -653,14 +654,16 @@ export default class Autocomplete extends PureComponent {
     if (index === -1) { return; }
 
     const { matches } = this.state;
-    const { data, dataLabel, filter, onAutocomplete, clearOnAutocomplete } = this.props;
+    const { data, dataLabel, dataValue, filter, onAutocomplete, clearOnAutocomplete } = this.props;
     let value = matches.filter(m => !React.isValidElement(m))[index];
+    let label;
     if (typeof value === 'object') {
-      value = value[dataLabel];
+      label = value[dataLabel];
+      value = value[dataValue];
     }
 
     if (onAutocomplete) {
-      onAutocomplete(value, index, matches);
+      onAutocomplete(label, value, index, matches);
     }
 
     value = clearOnAutocomplete ? '' : value;
@@ -803,12 +806,14 @@ export default class Autocomplete extends PureComponent {
    */
   _handleTouchStart(e) {
     const { target } = e;
-    const { data, dataLabel, onAutocomplete } = this.props;
+    const { data, dataLabel, dataValue, onAutocomplete } = this.props;
     const { suggestionIndex, suggestion } = this.state;
     if (target.classList.contains('md-autocomplete-suggestion') && suggestion) {
       let value = data[suggestionIndex];
+      let label;
       if (typeof value === 'object') {
-        value = value[dataLabel];
+        label = value[dataLabel];
+        value = value[dataValue];
       }
 
       if (onAutocomplete) {
